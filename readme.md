@@ -32,7 +32,11 @@ Code:
 # Usage
 
 ```bash
-npm i --save react-native-credit-card-input-fullpage
+npm i --save react-native-credit-card-input-vertical-form
+```
+or
+```bash
+yarn add react-native-credit-card-input-vertical-form
 ```
 
 then add these lines in your react-native codebase

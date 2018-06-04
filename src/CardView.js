@@ -131,7 +131,7 @@ export default class CardView extends Component {
             perspective={2000}
             clickable={false}
             flip={shouldFlip}>
-          <ImageBackground style={[BASE_SIZE, s.cardFace, transform]}
+          <ImageBackground imageStyle={{resizeMode:'contain'}} style={[BASE_SIZE, s.cardFace, transform]}
               source={imageFront}>
               <Image style={[s.icon]}
                   source={{ uri: Icons[brand] }} />

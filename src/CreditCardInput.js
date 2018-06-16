@@ -154,7 +154,7 @@ export default class CreditCardInput extends Component {
 CreditCardInput.defaultProps = {
   cardViewSize: {},
   labels: {
-    name: "Cardholder's name",
+    name: "Cardholder's Name",
     number: "Card Number",
     expiry: "Expiry",
     cvc: "CVC",

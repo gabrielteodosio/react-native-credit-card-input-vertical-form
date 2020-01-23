@@ -14,7 +14,7 @@ const s = StyleSheet.create({
     color: "black",
     flex: 1
   },
-  
+
 });
 
 export default class CCInput extends Component {
@@ -88,7 +88,7 @@ export default class CCInput extends Component {
                  {}),
               ]}
               underlineColorAndroid={"transparent"}
-              placeholderColor={placeholderColor}
+              placeholderTextColor={placeholderColor}
               placeholder={placeholder}
               value={value}
               onFocus={this._onFocus}

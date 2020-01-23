@@ -61,6 +61,7 @@ export default class CreditCardInput extends Component {
     cardImageBack: PropTypes.number,
     cardScale: PropTypes.number,
     cardFontFamily: PropTypes.string,
+    cardGradientColors: PropTypes.array,
   };
 
   componentDidMount = () => this._focus(this.props.focused);
@@ -110,7 +111,7 @@ export default class CreditCardInput extends Component {
       cardImageFront, cardImageBack, inputContainerStyle,
       values: { number, expiry, cvc, name, type }, focused,
       requiresName, requiresCVC, requiresPostalCode,
-      cardScale, cardFontFamily
+      cardScale, cardFontFamily, cardGradientColors,
     } = this.props;
 
     return (
@@ -126,6 +127,7 @@ export default class CreditCardInput extends Component {
           fontFamily={cardFontFamily}
           imageFront={cardImageFront}
           name={requiresName ? name : " "}
+          cardGradientColors={cardGradientColors}
         />
         <ScrollView
           ref="Form"
@@ -208,5 +210,5 @@ CreditCardInput.defaultProps = {
   },
   validColor: "",
   invalidColor: "red",
-  placeholderColor: "#ada8a4",
+  placeholderColor: "gray",
 };

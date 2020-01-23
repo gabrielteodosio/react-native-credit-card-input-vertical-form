@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from "react";
 import FlipCard from "react-native-flip-card";
+import LinearGradient from 'react-native-linear-gradient';
 
 import {
   View,
@@ -20,8 +21,8 @@ const s = StyleSheet.create({
   cardFace: {},
   icon: {
     position: "absolute",
-    top: 15,
-    right: 15,
+    top: 20,
+    left: 15,
     width: 60,
     height: 40,
     resizeMode: "contain",
@@ -127,50 +128,66 @@ export default class CardView extends Component {
 
     return (
       <View style={[s.cardContainer, containerSize]}>
-        <FlipCard
-          friction={10}
-          flipHorizontal
-          clickable={false}
-          flip={shouldFlip}
-          perspective={2000}
-          flipVertical={false}
-          style={{ borderWidth: 0 }}
-        >
-          <ImageBackground
-            source={imageFront}
-            imageStyle={{resizeMode:'contain'}}
-            style={[BASE_SIZE, s.cardFace, transform]}
+        <LinearGradient colors={['#bc8743', '#c37f16']}>
+          <FlipCard
+            friction={10}
+            flipHorizontal
+            clickable={false}
+            flip={shouldFlip}
+            perspective={2000}
+            flipVertical={false}
+            style={{ borderWidth: 0 }}
           >
-            <Image style={[s.icon]} source={{ uri: Icons[brand] }} />
-            <Text style={[s.baseText, { fontFamily }, s.number, !number && s.placeholder, focused === "number" && s.focused]}>
-              {!number ? placeholder.number : number}
-            </Text>
-            <Text
-              numberOfLines={1}
-              style={[s.baseText, { fontFamily }, s.name, !name && s.placeholder, focused === "name" && s.focused]}
+            <ImageBackground
+              source={imageFront}
+              imageStyle={{resizeMode:'contain'}}
+              style={[BASE_SIZE, s.cardFace, transform]}
             >
-              {!name ? placeholder.name : name.toUpperCase()}
-            </Text>
-            {/* Empty autoclose tag, justo have something */}
-            <Text style={[s.baseText, { fontFamily }, s.expiryLabel, s.placeholder, focused === "expiry" && s.focused]} />
-            <Text style={[s.baseText, { fontFamily }, s.expiry, !expiry && s.placeholder, focused === "expiry" && s.focused]}>
-              {!expiry ? placeholder.expiry : expiry}
-            </Text>
-            {isAmex && (
-              <Text style={[s.baseText, { fontFamily }, s.amexCVC, !cvc && s.placeholder, focused === "cvc" && s.focused]}>
+              <Image style={[s.icon]} source={{ uri: Icons[brand] }} />
+              <View
+                style={[
+                  { position: 'absolute', top: 70, left: 40, borderWidth: 1, borderColor: 'red', width: 200 },
+                  transform,
+                ]}
+              >
+                <Text
+                  style={[
+                    s.baseText,
+                    { fontFamily, fontSize: 16 },
+                    !number && s.placeholder,
+                    focused === "number" && s.focused,
+                  ]}
+                >
+                  {!number ? placeholder.number : number}
+                </Text>
+              </View>
+              <Text
+                numberOfLines={1}
+                style={[s.baseText, { fontFamily }, s.name, !name && s.placeholder, focused === "name" && s.focused]}
+              >
+                {!name ? placeholder.name : name.toUpperCase()}
+              </Text>
+              {/* Empty autoclose tag, justo have something */}
+              <Text style={[s.baseText, { fontFamily }, s.expiryLabel, s.placeholder, focused === "expiry" && s.focused]} />
+              <Text style={[s.baseText, { fontFamily }, s.expiry, !expiry && s.placeholder, focused === "expiry" && s.focused]}>
+                {!expiry ? placeholder.expiry : expiry}
+              </Text>
+              {isAmex && (
+                <Text style={[s.baseText, { fontFamily }, s.amexCVC, !cvc && s.placeholder, focused === "cvc" && s.focused]}>
+                  {!cvc ? placeholder.cvc : cvc}
+                </Text>
+              )}
+            </ImageBackground>
+            <ImageBackground
+              source={imageBack}
+              style={[BASE_SIZE, s.cardFace, transform]}
+            >
+              <Text style={[s.baseText, s.cvc, !cvc && s.placeholder, focused === "cvc" && s.focused]}>
                 {!cvc ? placeholder.cvc : cvc}
               </Text>
-            )}
-          </ImageBackground>
-          <ImageBackground
-            source={imageBack}
-            style={[BASE_SIZE, s.cardFace, transform]}
-          >
-            <Text style={[s.baseText, s.cvc, !cvc && s.placeholder, focused === "cvc" && s.focused]}>
-              {!cvc ? placeholder.cvc : cvc}
-            </Text>
-          </ImageBackground>
-        </FlipCard>
+            </ImageBackground>
+          </FlipCard>
+        </LinearGradient>
       </View>
     );
   }

@@ -168,6 +168,7 @@ export default class CardView extends Component {
                     borderWidth: 1,
                     borderRadius: 10,
                     position: 'absolute',
+                    alignItems: 'center',
                     borderColor: 'rgba(255, 255, 255, 0.3)',
                   },
                   transform,
@@ -176,7 +177,7 @@ export default class CardView extends Component {
                 <Text
                   style={[
                     s.baseText,
-                    { fontFamily, fontSize: 16 },
+                    { fontFamily, fontSize: 16, width: '95%' },
                     !number && s.placeholder,
                     focused === 'number' && s.focused,
                   ]}

@@ -97,10 +97,10 @@ export default class CardView extends Component {
   static defaultProps = {
     name: "",
     placeholder: {
-      number: "•••• •••• •••• ••••",
-      name: "NOME COMPLETO",
-      expiry: "••/••",
-      cvc: "•••",
+      number: "XXXX XXXX XXXX XXXX",
+      name: "NOME NO CARTÃO",
+      expiry: "VALIDADE",
+      cvc: "XXX",
     },
 
     scale: 1,
@@ -151,9 +151,8 @@ export default class CardView extends Component {
             >
               {!name ? placeholder.name : name.toUpperCase()}
             </Text>
-            <Text style={[s.baseText, { fontFamily }, s.expiryLabel, s.placeholder, focused === "expiry" && s.focused]}>
-              MONTH/YEAR
-            </Text>
+            {/* Empty autoclose tag, justo have something */}
+            <Text style={[s.baseText, { fontFamily }, s.expiryLabel, s.placeholder, focused === "expiry" && s.focused]} />
             <Text style={[s.baseText, { fontFamily }, s.expiry, !expiry && s.placeholder, focused === "expiry" && s.focused]}>
               {!expiry ? placeholder.expiry : expiry}
             </Text>

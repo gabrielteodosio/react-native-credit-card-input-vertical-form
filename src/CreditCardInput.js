@@ -208,5 +208,5 @@ CreditCardInput.defaultProps = {
   },
   validColor: "",
   invalidColor: "red",
-  placeholderColor: "gray",
+  placeholderColor: "#ada8a4",
 };

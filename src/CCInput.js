@@ -88,7 +88,7 @@ export default class CCInput extends Component {
                  {}),
               ]}
               underlineColorAndroid={"transparent"}
-              placeholderTextColor={placeholderColor}
+              placeholderTextColor={'#ada8a4'}
               placeholder={placeholder}
               value={value}
               onFocus={this._onFocus}

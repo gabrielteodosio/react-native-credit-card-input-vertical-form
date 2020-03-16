@@ -43,15 +43,15 @@ export default class CCInput extends Component {
   static defaultProps = {
     label: "",
     value: "",
-    status: "incomplete",
-    keyboardType: "numeric",
-    containerStyle: {},
     inputStyle: {},
     labelStyle: {},
     onFocus: () => {},
+    containerStyle: {},
     onChange: () => {},
+    status: "incomplete",
     onBecomeEmpty: () => {},
     onBecomeValid: () => {},
+    keyboardType: "numeric",
   };
 
   componentWillReceiveProps = newProps => {
@@ -68,31 +68,40 @@ export default class CCInput extends Component {
   _onChange = value => this.props.onChange(this.props.field, value);
 
   render() {
-    const { label, value, placeholder, status, keyboardType,
-            containerStyle, inputStyle, labelStyle,
-            validColor, invalidColor, placeholderColor } = this.props;
+    const {
+      label, value, placeholder, status, keyboardType,
+      containerStyle, inputStyle, labelStyle,
+      validColor, invalidColor, placeholderColor
+    } = this.props;
+
     return (
-      <TouchableOpacity onPress={this.focus}
-          activeOpacity={0.99}>
+      <TouchableOpacity
+        onPress={this.focus}
+        activeOpacity={0.99}
+      >
         <View style={[containerStyle,{justifyContent:'space-between'}]}>
-          { !!label && <Text style={[labelStyle]}>{label}</Text>}
-          <TextInput ref="input"
-              keyboardType={keyboardType}
-              autoCapitalise="words"
-              autoCorrect={false}
-              style={[
-                s.baseInputStyle,
-                inputStyle,
-                ((validColor && status === "valid") ? { color: validColor } :
-                 (invalidColor && status === "invalid") ? { color: invalidColor } :
-                 {}),
-              ]}
-              underlineColorAndroid={"transparent"}
-              placeholderTextColor={'#ada8a4'}
-              placeholder={placeholder}
-              value={value}
-              onFocus={this._onFocus}
-              onChangeText={this._onChange} />
+          {!!label && (
+            <Text style={[labelStyle]}>{label}</Text>
+          )}
+          <TextInput
+            ref="input"
+            autoCorrect={false}
+            autoCapitalise="words"
+            keyboardType={keyboardType}
+            style={[
+              s.baseInputStyle,
+              inputStyle,
+              ((validColor && status === "valid") ? { color: validColor } :
+                (invalidColor && status === "invalid") ? { color: invalidColor } :
+                {}),
+            ]}
+            value={value}
+            onFocus={this._onFocus}
+            placeholder={placeholder}
+            onChangeText={this._onChange}
+            placeholderTextColor={'#ada8a4'}
+            underlineColorAndroid={"transparent"}
+          />
         </View>
       </TouchableOpacity>
     );

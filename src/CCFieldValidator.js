@@ -2,6 +2,7 @@ import valid from "card-validator";
 import pick from "lodash.pick";
 import values from "lodash.values";
 import every from "lodash.every";
+import { isValidCpf, removeNonNumber } from './Utilities'
 
 const toStatus = validation => {
   return validation.isValid ? "valid" :
@@ -10,10 +11,16 @@ const toStatus = validation => {
 };
 
 const FALLBACK_CARD = { gaps: [4, 8, 12], lengths: [16], code: { size: 3 } };
+const fallback = {
+  validatePostalCode: () => {},
+  validateDocument: () => {}
+}
+
 export default class CCFieldValidator {
-  constructor(displayedFields, validatePostalCode) {
-    this._displayedFields = displayedFields;
-    this._validatePostalCode = validatePostalCode;
+  constructor(displayedFields, validationFunctions = fallback) {
+    this._displayedFields = [...displayedFields, 'rawDocument'];
+    this._validatePostalCode = validationFunctions.validatePostalCode;
+    this._validateDocument = validationFunctions.validateDocument;
   }
 
   validateValues = (formValues) => {
@@ -26,6 +33,8 @@ export default class CCFieldValidator {
       number: toStatus(numberValidation),
       expiry: toStatus(expiryValidation),
       cvc: toStatus(cvcValidation),
+      document: isValidCpf(removeNonNumber(formValues.document)) ? "valid" : "incomplete",
+      rawDocument: isValidCpf(removeNonNumber(formValues.rawDocument)) ? "valid" : "incomplete",
       name: !!formValues.name ? "valid" : "incomplete",
       postalCode: this._validatePostalCode(formValues.postalCode),
     }, this._displayedFields);

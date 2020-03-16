@@ -10,8 +10,8 @@ import ReactNative, {
   ViewPropTypes,
 } from "react-native";
 
-import CreditCard from "./CardView";
 import CCInput from "./CCInput";
+import CreditCard from "./CardView";
 import { InjectedProps } from "./connectToState";
 
 const s = StyleSheet.create({
@@ -19,6 +19,7 @@ const s = StyleSheet.create({
     alignItems: "center",
   },
   form: {
+    maxWidth: Dimensions.get('screen').width - 40,
     marginTop: 20,
   },
   inputContainer: {
@@ -43,7 +44,32 @@ const PREVIOUS_FIELD_OFFSET = 40;
 const POSTAL_CODE_INPUT_WIDTH = 120;
 
 /* eslint react/prop-types: 0 */ // https://github.com/yannickcr/eslint-plugin-react/issues/106
-export default class CreditCardInput extends Component {
+class CreditCardInput extends Component {
+  static defaultProps = {
+    cardViewSize: {},
+    labels: {
+      name: "Cardholder's Name",
+      number: "Card Number",
+      expiry: "Expiry",
+      cvc: "CVC",
+      postalCode: "Postal Code",
+      document: "Rivaldo"
+    },
+    placeholders: {
+      name: "Full Name",
+      number: "1234 5678 1234 5678",
+      expiry: "MM/YY",
+      cvc: "CVC",
+      postalCode: "34567",
+      document: "123.456.789-00"
+    },
+    inputContainerStyle: {
+    },
+    validColor: "",
+    invalidColor: "red",
+    placeholderColor: "gray",
+  }
+
   static propTypes = {
     ...InjectedProps,
     labels: PropTypes.object,
@@ -95,7 +121,8 @@ export default class CreditCardInput extends Component {
       inputStyle: [s.input, inputStyle],
       labelStyle: [s.inputLabel, labelStyle],
       validColor, invalidColor, placeholderColor,
-      ref: field, field,
+      ref: field,
+      field,
 
       label: labels[field],
       placeholder: placeholders[field],
@@ -110,7 +137,7 @@ export default class CreditCardInput extends Component {
     const {
       cardImageFront, cardImageBack, inputContainerStyle,
       values: { number, expiry, cvc, name, type }, focused,
-      requiresName, requiresCVC, requiresPostalCode,
+      requiresName, requiresCVC, requiresPostalCode, requiresDocument,
       cardScale, cardFontFamily, cardGradientColors,
     } = this.props;
 
@@ -133,7 +160,7 @@ export default class CreditCardInput extends Component {
           ref="Form"
           style={s.form}
           horizontal={false}
-          scrollEnabled={false}
+          scrollEnabled={true}
           keyboardShouldPersistTaps="always"
           showsHorizontalScrollIndicator={false}
         >
@@ -163,6 +190,16 @@ export default class CreditCardInput extends Component {
               ]}
             />
           )}
+          {requiresDocument && (
+            <CCInput
+                {...this._inputProps("document")}
+                containerStyle={[
+                  s.inputContainer,
+                  { flex: 1, flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1,borderColor: '#e3e3e3', width: CARD_NUMBER_INPUT_WIDTH },
+                  inputContainerStyle,
+                ]}
+              />
+          )}
           {requiresName && (
             <CCInput
               {...this._inputProps("name")}
@@ -190,25 +227,4 @@ export default class CreditCardInput extends Component {
   }
 }
 
-CreditCardInput.defaultProps = {
-  cardViewSize: {},
-  labels: {
-    name: "Cardholder's Name",
-    number: "Card Number",
-    expiry: "Expiry",
-    cvc: "CVC",
-    postalCode: "Postal Code",
-  },
-  placeholders: {
-    name: "Full Name",
-    number: "1234 5678 1234 5678",
-    expiry: "MM/YY",
-    cvc: "CVC",
-    postalCode: "34567",
-  },
-  inputContainerStyle: {
-  },
-  validColor: "",
-  invalidColor: "red",
-  placeholderColor: "gray",
-};
+export default CreditCardInput

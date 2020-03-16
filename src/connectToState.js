@@ -1,8 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { Component } from "react";
+import compact from "lodash.compact";
+import PropTypes from 'prop-types';
+
 import CCFieldFormatter from "./CCFieldFormatter";
 import CCFieldValidator from "./CCFieldValidator";
-import compact from "lodash.compact";
+import { isValidCpf } from "../../../App/Utils/Validate";
 
 export const InjectedProps = {
   focused: PropTypes.string,
@@ -15,6 +17,7 @@ export const InjectedProps = {
   requiresName: PropTypes.bool,
   requiresCVC: PropTypes.bool,
   requiresPostalCode: PropTypes.bool,
+  requiresDocument: PropTypes.bool,
 };
 
 export default function connectToState(CreditCardInput) {
@@ -27,6 +30,8 @@ export default function connectToState(CreditCardInput) {
       requiresCVC: PropTypes.bool,
       requiresPostalCode: PropTypes.bool,
       validatePostalCode: PropTypes.func,
+      requiresDocument: PropTypes.bool,
+      validateDocument: PropTypes.func,
     };
 
     static defaultProps = {
@@ -35,7 +40,13 @@ export default function connectToState(CreditCardInput) {
       onFocus: () => {},
       requiresName: false,
       requiresCVC: true,
+      requiresDocument: true,
       requiresPostalCode: false,
+      validateDocument: (document = "") => {
+        return isValidCpf(document) ? "valid" :
+               document.length > 9 ? "invalid" :
+               "incomplete";
+      },
       validatePostalCode: (postalCode = "") => {
         return postalCode.match(/^\d{6}$/) ? "valid" :
                postalCode.length > 6 ? "invalid" :
@@ -57,10 +68,14 @@ export default function connectToState(CreditCardInput) {
     });
 
     setValues = values => {
+      const { validatePostalCode, validateDocument } = this.props;
+
+      const validationFunctions = { validatePostalCode, validateDocument }
+
       const newValues = { ...this.state.values, ...values };
       const displayedFields = this._displayedFields();
       const formattedValues = (new CCFieldFormatter(displayedFields)).formatValues(newValues);
-      const validation = (new CCFieldValidator(displayedFields, this.props.validatePostalCode)).validateValues(formattedValues);
+      const validation = (new CCFieldValidator(displayedFields, validationFunctions)).validateValues(formattedValues);
       const newState = { values: formattedValues, ...validation };
 
       this.setState(newState);
@@ -72,11 +87,13 @@ export default function connectToState(CreditCardInput) {
     };
 
     _displayedFields = () => {
-      const { requiresName, requiresCVC, requiresPostalCode } = this.props;
+      const { requiresName, requiresCVC, requiresPostalCode, requiresDocument } = this.props;
+
       return compact([
         "number",
         "expiry",
         requiresCVC ? "cvc" : null,
+        requiresDocument ? "document" : null,
         requiresName ? "name" : null,
         requiresPostalCode ? "postalCode" : null,
       ]);
@@ -101,7 +118,11 @@ export default function connectToState(CreditCardInput) {
     };
 
     _change = (field, value) => {
-      this.setValues({ [field]: value });
+      if (field === 'document') {
+          this.setValues({ rawDocument: value, [field]: value, });
+      } else {
+        this.setValues({ [field]: value });
+      }
     };
 
     _onFocus = (field) => {
@@ -112,12 +133,13 @@ export default function connectToState(CreditCardInput) {
     render() {
       return (
         <CreditCardInput
-            {...this.props}
-            {...this.state}
-            onFocus={this._onFocus}
-            onChange={this._change}
-            onBecomeEmpty={this._focusPreviousField}
-            onBecomeValid={this._focusNextField} />
+          {...this.props}
+          {...this.state}
+          onFocus={this._onFocus}
+          onChange={this._change}
+          onBecomeValid={this._focusNextField}
+          onBecomeEmpty={this._focusPreviousField}
+        />
       );
     }
   }

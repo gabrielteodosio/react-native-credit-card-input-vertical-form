@@ -1,6 +1,6 @@
+import pick from "lodash.pick";
 import valid from "card-validator";
 import { removeNonNumber, removeLeadingSpaces } from "./Utilities";
-import pick from "lodash.pick";
 
 const limitLength = (string = "", maxLength) => string.substr(0, maxLength);
 const addGaps = (string = "", gaps) => {
@@ -13,10 +13,35 @@ const addGaps = (string = "", gaps) => {
   }).filter(part => part !== "").join(" ");
 };
 
+const formatToMask = (value, Mask) => {
+  let maskBoolean
+
+  const exp = /-|\.|\/|\(|\)| /g
+  const numberSanitized = value.toString().replace(exp, '')
+
+  let fieldPosition = 0
+  let newFieldValue = ''
+  let maskLength = numberSanitized.length
+
+  for (let i = 0; i <= maskLength; i++) {
+    maskBoolean = ((Mask.charAt(i) === '-') || (Mask.charAt(i) === '.') || (Mask.charAt(i) === '/'))
+    maskBoolean = maskBoolean || ((Mask.charAt(i) === '(') || (Mask.charAt(i) === ')') || (Mask.charAt(i) === ' '))
+    if (maskBoolean) {
+      newFieldValue += Mask.charAt(i)
+      maskLength++
+    } else {
+      newFieldValue += numberSanitized.charAt(fieldPosition)
+      fieldPosition++
+    }
+  }
+
+  return newFieldValue
+}
+
 const FALLBACK_CARD = { gaps: [4, 8, 12], lengths: [16], code: { size: 3 } };
 export default class CCFieldFormatter {
   constructor(displayedFields) {
-    this._displayedFields = [...displayedFields, "type"];
+    this._displayedFields = [...displayedFields, "type", 'rawDocument'];
   }
 
   formatValues = (values) => {
@@ -27,10 +52,18 @@ export default class CCFieldFormatter {
       number: this._formatNumber(values.number, card),
       expiry: this._formatExpiry(values.expiry),
       cvc: this._formatCVC(values.cvc, card),
+      document: limitLength(this._formatDocument(values.document), 14),
+      rawDocument: removeNonNumber(values.rawDocument),
       name: removeLeadingSpaces(values.name),
       postalCode: removeNonNumber(values.postalCode),
     }, this._displayedFields);
   };
+
+  _formatDocument = (number) => {
+    const numberSanitized = removeNonNumber(number);
+    const formatted = formatToMask(""+numberSanitized, '000.000.000-00')
+    return formatted
+  }
 
   _formatNumber = (number, card) => {
     const numberSanitized = removeNonNumber(number);

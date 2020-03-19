@@ -38,7 +38,7 @@ const formatToMask = (value, Mask) => {
   return newFieldValue
 }
 
-const FALLBACK_CARD = { gaps: [4, 8, 12], lengths: [16], code: { size: 3 } };
+const FALLBACK_CARD = { gaps: [4, 8, 12], lengths: [16], code: { size: 3 }, type: undefined };
 export default class CCFieldFormatter {
   constructor(displayedFields) {
     this._displayedFields = [...displayedFields, 'type', 'rawDocument'];
@@ -48,7 +48,9 @@ export default class CCFieldFormatter {
     const card = valid.number(values.number).card || FALLBACK_CARD;
 
     let type = undefined
-    if (typeof card.type === 'string' && permittedBrands.includes(card.type.toLowerCase())) {
+    const isPermitted = typeof card.type === 'string' && permittedBrands.reduce((acc, cur) => !acc ? !!cur.match(card.type.toLowerCase()) : acc, false)
+
+    if (isPermitted) {
       type = card.type
     }
 

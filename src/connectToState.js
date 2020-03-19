@@ -20,9 +20,12 @@ export const InjectedProps = {
   requiresDocument: PropTypes.bool,
 };
 
+const cards = 'american-express,Amex,Diners,diners-club,Discover,Elo,hiper,Hipercard,master,Mastercard,Visa'
+
 export default function connectToState(CreditCardInput) {
   class StateConnection extends Component {
     static propTypes = {
+      permittedBrands: PropTypes.oneOf(cards.toLowerCase().split(',')),
       autoFocus: PropTypes.bool,
       onChange: PropTypes.func.isRequired,
       onFocus: PropTypes.func,
@@ -35,6 +38,7 @@ export default function connectToState(CreditCardInput) {
     };
 
     static defaultProps = {
+      permittedBrands: cards.toLowerCase().split(','),
       autoFocus: false,
       onChange: () => {},
       onFocus: () => {},
@@ -68,10 +72,9 @@ export default function connectToState(CreditCardInput) {
     });
 
     setValues = values => {
-      const { validatePostalCode, validateDocument } = this.props;
+      const { validatePostalCode, validateDocument, permittedBrands } = this.props;
 
       const validationFunctions = { validatePostalCode, validateDocument }
-      const permittedBrands = 'Amex,Diners,Discover,Elo,Hipercard,Master,Visa'.toLowerCase().split(',')
 
       const newValues = { ...this.state.values, ...values };
       const displayedFields = this._displayedFields();

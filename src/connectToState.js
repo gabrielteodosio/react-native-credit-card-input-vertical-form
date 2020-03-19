@@ -23,7 +23,6 @@ export const InjectedProps = {
 export default function connectToState(CreditCardInput) {
   class StateConnection extends Component {
     static propTypes = {
-      permittedCards: PropTypes.array,
       autoFocus: PropTypes.bool,
       onChange: PropTypes.func.isRequired,
       onFocus: PropTypes.func,
@@ -36,7 +35,6 @@ export default function connectToState(CreditCardInput) {
     };
 
     static defaultProps = {
-      permittedCards: 'Amex,Diners,Discover,Elo,Hipercard,Master,Visa'.split(','),
       autoFocus: false,
       onChange: () => {},
       onFocus: () => {},
@@ -70,13 +68,13 @@ export default function connectToState(CreditCardInput) {
     });
 
     setValues = values => {
-      const { validatePostalCode, validateDocument, permittedCards } = this.props;
+      const { validatePostalCode, validateDocument } = this.props;
 
       const validationFunctions = { validatePostalCode, validateDocument }
 
       const newValues = { ...this.state.values, ...values };
       const displayedFields = this._displayedFields();
-      const formattedValues = (new CCFieldFormatter(displayedFields)).formatValues(newValues, permittedCards);
+      const formattedValues = (new CCFieldFormatter(displayedFields)).formatValues(newValues);
       const validation = (new CCFieldValidator(displayedFields, validationFunctions)).validateValues(formattedValues);
       const newState = { values: formattedValues, ...validation };
 

@@ -41,14 +41,19 @@ const formatToMask = (value, Mask) => {
 const FALLBACK_CARD = { gaps: [4, 8, 12], lengths: [16], code: { size: 3 } };
 export default class CCFieldFormatter {
   constructor(displayedFields) {
-    this._displayedFields = [...displayedFields, "type", 'rawDocument'];
+    this._displayedFields = [...displayedFields, 'type', 'rawDocument'];
   }
 
-  formatValues = (values) => {
+  formatValues = (values, permittedTypes) => {
     const card = valid.number(values.number).card || FALLBACK_CARD;
 
+    let type
+    if (card.type && permittedTypes.includes(card.type)) {
+      type = card.type
+    }
+
     return pick({
-      type: card.type,
+      type,
       number: this._formatNumber(values.number, card),
       expiry: this._formatExpiry(values.expiry),
       cvc: this._formatCVC(values.cvc, card),

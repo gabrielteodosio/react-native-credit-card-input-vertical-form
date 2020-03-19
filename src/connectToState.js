@@ -71,10 +71,11 @@ export default function connectToState(CreditCardInput) {
       const { validatePostalCode, validateDocument } = this.props;
 
       const validationFunctions = { validatePostalCode, validateDocument }
+      const permittedBrands = 'Amex,Diners,Discover,Elo,Hipercard,Master,Visa'.toLowerCase().split(',')
 
       const newValues = { ...this.state.values, ...values };
       const displayedFields = this._displayedFields();
-      const formattedValues = (new CCFieldFormatter(displayedFields)).formatValues(newValues);
+      const formattedValues = (new CCFieldFormatter(displayedFields)).formatValues(newValues, permittedBrands);
       const validation = (new CCFieldValidator(displayedFields, validationFunctions)).validateValues(formattedValues);
       const newState = { values: formattedValues, ...validation };
 

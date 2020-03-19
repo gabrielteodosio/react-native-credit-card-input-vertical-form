@@ -44,11 +44,16 @@ export default class CCFieldFormatter {
     this._displayedFields = [...displayedFields, 'type', 'rawDocument'];
   }
 
-  formatValues = (values) => {
+  formatValues = (values, permittedBrands) => {
     const card = valid.number(values.number).card || FALLBACK_CARD;
 
+    let type = undefined
+    if (typeof card.type === 'string' && permittedBrands.includes(card.type.toLowerCase())) {
+      type = card.type
+    }
+
     return pick({
-      type: card.type,
+      type,
       number: this._formatNumber(values.number, card),
       expiry: this._formatExpiry(values.expiry),
       cvc: this._formatCVC(values.cvc, card),
